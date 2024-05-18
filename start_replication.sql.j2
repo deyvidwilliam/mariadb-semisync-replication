@@ -1,0 +1,28 @@
+-- Setting up Slave to connect to Master 
+-- and start semi-sync replication using [slave_pos]
+-- 
+-- 
+-- (1) GLOBAL gtid_slave_pos = Use the position value
+-- from the output of last snapshot generated in Master 
+-- a) If "mariabackup" = GTID of the last change
+-- b) If "maria-dump" = gtid_slave_pos 
+--
+-- (2) Make sure MASTER_HOST is current Master
+--
+-- Author: Deyvid W A Evaristo
+-------------------------------------------
+SET @@global.read_only=1;
+SET @@GLOBAL.rpl_semi_sync_slave_enabled=ON;
+STOP SLAVE;
+RESET SLAVE;
+SET GLOBAL gtid_slave_pos='0-1-43932112';
+CHANGE MASTER to
+ MASTER_HOST = '{{serveurActif}}',
+ MASTER_USER = 'replication_user',
+ MASTER_PASSWORD = 'rep123!',
+ MASTER_PORT = 3306,
+ MASTER_USE_GTID = slave_pos;
+START SLAVE;
+SELECT SLEEP(5);
+SHOW SLAVE STATUS\G;
+

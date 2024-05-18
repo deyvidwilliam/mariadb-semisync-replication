@@ -1,0 +1,10 @@
+-------------------------------------------
+-- Disconnecting Slave from Master 
+-- Can be used in preparation for switching roles
+--
+-- Author: Deyvid W A Evaristo
+-------------------------------------------
+show variables like '%gtid%l%pos';
+stop slave;
+reset slave;
+reset slave all;
